@@ -4,7 +4,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 import { HomePage } from '../home/home';
 
-import { Http } from '@angular/http';
+import { Http, Headers, Response } from '@angular/http';
 
 
 /**
@@ -27,6 +27,7 @@ export class LoginPage {
   	private http: Http,
   	) {
   }
+  items: Object = null;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
@@ -42,12 +43,15 @@ export class LoginPage {
     // this.navCtrl.setRoot(HomePage);
   }
 
-  getDataJson(): void {
+  getDataJson() {
 
-    return this.http.get('http://localhost:9999/users')
-    .subscribe(data => console.log(JSON.parse(data)));
-    // return this.http.get('http://localhost:3000/employees')
-    // .subscribe(data => console.log(JSON.parse(data._body)));
+    this.http.get('http://localhost:9999/users')
+            .subscribe((data: Response) => {
+                this.items = data;
+    console.log(this.items);
+
+            });
+    return this.items;
   }
 
 }
