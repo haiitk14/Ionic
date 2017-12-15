@@ -4,7 +4,10 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 import { HomePage } from '../home/home';
 
-import { Http, Headers, Response } from '@angular/http';
+import { Http,Headers, Response } from '@angular/http';
+import { RequestOptions } from '@angular/http';
+
+import { AccountServiceProvider } from '../../providers/account-service/account-service';
 
 
 /**
@@ -25,6 +28,7 @@ export class LoginPage {
   	public navCtrl: NavController,
   	public navParams: NavParams,
   	private http: Http,
+    private AccountServiceProvider: AccountServiceProvider,
   	) {
   }
   items: Object = null;
@@ -45,13 +49,14 @@ export class LoginPage {
 
   getDataJson() {
 
-    this.http.get('http://localhost:9999/users')
-            .subscribe((data: Response) => {
-                this.items = data;
-    console.log(this.items);
+    this.AccountServiceProvider.getData()
+        .then((result) =>{
+            this.showData(result);
+        });
+  }
 
-            });
-    return this.items;
+  showData(users) {
+    console.log(users);
   }
 
 }
