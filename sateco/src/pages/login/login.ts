@@ -4,8 +4,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 import { HomePage } from '../home/home';
 
-import { Http,Headers, Response } from '@angular/http';
-import { RequestOptions } from '@angular/http';
+// import { Http,Headers, Response } from '@angular/http';
+// import { RequestOptions } from '@angular/http';
 
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
 
@@ -27,7 +27,6 @@ export class LoginPage {
   constructor(
   	public navCtrl: NavController,
   	public navParams: NavParams,
-  	private http: Http,
     private AccountServiceProvider: AccountServiceProvider,
   	) {
   }
@@ -37,26 +36,26 @@ export class LoginPage {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  signupPage() {
+  goToSignup() {
   	this.navCtrl.push(SignupPage);
   }
 
   login() {
     // code here
-    this.getDataJson();
-    // this.navCtrl.setRoot(HomePage);
+    // this.getDataJson();
+    this.navCtrl.setRoot(HomePage);
   }
 
-  getDataJson() {
+  // getDataJson() {
 
-    this.AccountServiceProvider.getData()
-        .then((result) =>{
-            this.showData(result);
-        });
-  }
+  //   this.AccountServiceProvider.getData()
+  //       .then((result) =>{
+  //           this.showData(result);
+  //       });
+  // }
 
-  showData(users) {
-    console.log(users);
-  }
+  // showData(users) {
+  //   console.log(users);
+  // }
 
 }

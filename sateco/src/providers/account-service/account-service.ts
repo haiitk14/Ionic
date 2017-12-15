@@ -1,8 +1,9 @@
-import { Http, Headers } from '@angular/http';
+import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 
 let apiUrl = 'users';
+
 
 /*
   Generated class for the AccountServiceProvider provider.
@@ -20,7 +21,6 @@ export class AccountServiceProvider {
   getData(){
 
     return new Promise((resolve, reject) =>{
-      let headers = new Headers();
       this.http.get(apiUrl).
       subscribe(res =>{
         resolve(res.json());

@@ -5,10 +5,9 @@ import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
 import { SignupPage } from '../pages/signup/signup';
-
+import { ChangepasswordPage } from '../pages/changepassword/changepassword';
 
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -19,9 +18,9 @@ import { AccountServiceProvider } from '../providers/account-service/account-ser
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
     LoginPage,
-    SignupPage
+    SignupPage,
+    ChangepasswordPage
   ],
   imports: [
     BrowserModule,
@@ -32,9 +31,9 @@ import { AccountServiceProvider } from '../providers/account-service/account-ser
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
     LoginPage,
-    SignupPage
+    SignupPage,
+    ChangepasswordPage
   ],
   providers: [
     StatusBar,
