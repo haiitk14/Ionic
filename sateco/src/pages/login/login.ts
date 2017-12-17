@@ -4,9 +4,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SignupPage } from '../signup/signup';
 import { HomePage } from '../home/home';
 
-// import { Http,Headers, Response } from '@angular/http';
-// import { RequestOptions } from '@angular/http';
-
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
 
 
@@ -30,32 +27,38 @@ export class LoginPage {
     private AccountServiceProvider: AccountServiceProvider,
   	) {
   }
-  items: Object = null;
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
-  }
+  username: string;
+  password: string;
 
   goToSignup() {
   	this.navCtrl.push(SignupPage);
   }
 
   login() {
-    // code here
-    // this.getDataJson();
-    this.navCtrl.setRoot(HomePage);
+    if(this.username == undefined || this.username == ""){
+      alert("Username not empty");
+      return;
+    }
+    if(this.password == undefined || this.password == ""){
+      alert("Password not empty");
+      return;
+    }
+
+    let infoUser: Object = {
+      username: this.username,
+      password: this.password
+    };      
+    this.AccountServiceProvider.login(infoUser)
+        .then((result) =>{
+            this.checkLogin(result);
+        });
   }
 
-  // getDataJson() {
-
-  //   this.AccountServiceProvider.getData()
-  //       .then((result) =>{
-  //           this.showData(result);
-  //       });
-  // }
-
-  // showData(users) {
-  //   console.log(users);
-  // }
-
+  checkLogin(res) {
+    if(res.status == "200"){
+      this.navCtrl.setRoot(HomePage);
+    }else{
+      alert(res.message);
+    }
+  }
 }
