@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage } from '../home/home';
+import { LoginPage } from '../login/login';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
-import { SignupPage } from '../signup/signup';
+import { Storage } from '@ionic/storage';
+import { Common } from '../../providers/common'
+import { ToastController } from 'ionic-angular';
+
 
 /**
  * Generated class for the ChangepasswordPage page.
@@ -22,28 +26,69 @@ export class ChangepasswordPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public AccountServiceProvider: AccountServiceProvider,
-  ) {}
-  oldpassword: string;
-  newpassword: string;
-  confpassword: string;
+    public storage: Storage,
+    public toastCtrl: ToastController,
+
+  ) {
+    this.storage.get('userid').then((val) => {
+       this.userId = val;
+    });
+  }
+
+  userId: number;
+  oldPassword: string;
+  newPassword: string;
+  confPassword: string;
+
+  common = new Common(this.toastCtrl);
 
   changepass(){
-    let pageSignup = new SignupPage(this.navCtrl, this.navParams, this.AccountServiceProvider);
 
-    let valiPassOld = pageSignup.validatePassword(this.oldpassword);
-    let valiPassNew = pageSignup.validatePassword(this.newpassword);
-    let valiPassConf = pageSignup.validatePassword(this.confpassword);
+    if(this.oldPassword == undefined || this.oldPassword == ""){
+      this.common.showToast("Password old not empty");
+      return;
+    }
+    if(this.newPassword == undefined || this.newPassword == ""){
+      this.common.showToast("Password new not empty");
+      return;
+    }
+    if(this.confPassword == undefined || this.confPassword == ""){
+      this.common.showToast("Password confirm not empty");
+      return;
+    }
+    if(this.newPassword != this.confPassword){
+      this.common.showToast("Incorrect password");
+      return;
+    }
+    let valiPassOld = this.common.validatePassword(this.oldPassword);
+    if(!valiPassOld)return;
 
-    let pass: Object = {
-       oldpassword: this.oldpassword,
-       newpassword: this.newpassword,
-       confpassword: this.confpassword
-    };
-    
-    
+    let valiPassNew = this.common.validatePassword(this.newPassword);
+    if(!valiPassNew) return;
 
+    let valiPassConf = this.common.validatePassword(this.confPassword);
+    if(!valiPassConf) return;
 
-    // this.navCtrl.setRoot(HomePage);
+    if(valiPassOld && valiPassNew && valiPassConf){
+      let pass: Object = {
+        userId: this.userId,
+        oldPassword: this.oldPassword,
+        newPassword: this.newPassword
+      };
+
+      this.AccountServiceProvider.changePassword(pass).subscribe(
+              data => this.checkChangePassword(data)
+          );
+    }
+  }
+
+  checkChangePassword(res) {
+    if(res.status == "200"){
+      this.common.showToast(res.message);
+      this.navCtrl.setRoot(LoginPage);
+    }else{
+      this.common.showToast(res.message);
+    }
   }
 
   goToHome() {

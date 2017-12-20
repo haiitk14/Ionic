@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
+import { Common } from '../../providers/common';
+import { ToastController } from 'ionic-angular';
+
+
 
 /**
  * Generated class for the SignupPage page.
@@ -21,9 +25,13 @@ export class SignupPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public AccountServiceProvider: AccountServiceProvider,
+    public toastCtrl: ToastController,
+
   ) {}
   username: string;
   password: string;
+  common = new Common(this.toastCtrl); 
+
 
   goToLogin() {
   	this.navCtrl.push(LoginPage);
@@ -31,51 +39,37 @@ export class SignupPage {
 
   signup() {
     if(this.username == undefined || this.username == ""){
-      alert("Username not empty");
+      this.common.showToast("Username not empty");
       return;
     }
     if(this.password == undefined || this.password == ""){
-      alert("Password not empty");
+      this.common.showToast("Password not empty");
       return;
     }
-    let validateUsername = this.validateUsername(this.username);
-    let validatePassword = this.validatePassword(this.password);
+    let validateUsername = this.common.validateUsername(this.username);
+    let validatePassword = this.common.validatePassword(this.password);
     if(validateUsername && validatePassword){
       let infoUser: Object = {
         username: this.username,
         password: this.password
       }; 
-      this.AccountServiceProvider.signup(infoUser)
-        .then((result) =>{
-            this.checkSignup(result);
-        });
+
+      this.AccountServiceProvider.signup(infoUser).subscribe(
+            data => this.checkSignup(data)
+        );    
+      // this.AccountServiceProvider.signup(infoUser)
+      //   .then((result) =>{
+      //       this.checkSignup(result);
+      //   });
     }         
   }
 
   checkSignup(res) {
     if(res.status == "200"){
-      alert(res.message);
+      this.common.showToast(res.message);
       this.navCtrl.setRoot(LoginPage);
     }else{
-      alert(res.message);
+      this.common.showToast(res.message);
     }
-  }
-
-  validateUsername(username) {
-    if(username.search(/^([a-zA-Z]+[a-zA-Z0-9]+){3,30}$/) < 0){
-      alert("Username length 3 to 30 characters");
-      return false;
-    }
-
-    return true;
-  }
-
-  validatePassword(password) {
-    if(password.search(/^[a-zA-Z0-9]{6,30}$/) < 0){
-      alert("Password about 6 to 30 characters");
-      return false;
-    }
-
-    return true;
   }
 }
