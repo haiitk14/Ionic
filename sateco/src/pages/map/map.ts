@@ -21,6 +21,7 @@ declare var google;
 export class MapPage {
   @ViewChild('map') mapElement: ElementRef;
   map: any;
+  markerOld: any;
 
   constructor(
     public navCtrl: NavController,
@@ -31,11 +32,10 @@ export class MapPage {
 
   ionViewDidLoad() {
     this.loadMap();
-
     var tempThis = this;
     setInterval(function(){ 
         tempThis.getDataDevice();
-    }, 5000);
+    }, 30000);
   }
 
   loadMap() {
@@ -48,6 +48,7 @@ export class MapPage {
       }
    
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+      this.getDataDevice();
 
     }, (err) => {
       console.log(err);
@@ -55,13 +56,19 @@ export class MapPage {
   }
 
   addMarker(latLng) {
-
-    // console.log(latLng);
-    new google.maps.Marker({
+    if(this.markerOld != undefined){
+      this.deleteMarker(this.markerOld);
+    }
+    var marker = new google.maps.Marker({
         map: this.map,
-        animation: google.maps.Animation.DROP,
         position: latLng,
+        icon: './assets/imgs/pointer.png'
       });
+    this.markerOld = marker;
+  }
+
+  deleteMarker(marker) {
+    marker.setMap(null);
   }
 
   getDataDevice() {
@@ -71,12 +78,10 @@ export class MapPage {
   }
 
   showDataDevice(device) {
-    console.log(device.results[0]);
     let latLng: Object = {
       lat: device.results[0].lat,
       lng: device.results[0].lng  
     }
-    console.log(latLng);
     this.addMarker(latLng);
   }
 
